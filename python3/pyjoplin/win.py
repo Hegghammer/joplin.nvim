@@ -104,7 +104,7 @@ class Win(object):
             self.open()
 
     def write(self):
-        note_id = vim.current.buffer.vars.get('joplin_note_id', b'')# .decode()
+        note_id = vim.current.buffer.vars.get('joplin_note_id', b'')
         if note_id == '':
             return
 
@@ -145,7 +145,7 @@ class Win(object):
             diffnr = vim.current.buffer.vars.get('diffnr', [])
             prog = re.compile(note.title + r'\.remote\.\d*\.md')
             for bufnr in diffnr:
-                bufname = vim.call('bufname', bufnr).decode()
+                bufname = vim.call('bufname', bufnr)
                 basename = os.path.basename(bufname)
                 if prog.match(basename):
                     vim.command('%dbdelete!' % bufnr)
@@ -156,7 +156,7 @@ class Win(object):
         vim.command('set nomodified')
 
     def leave(self):
-        note_id = vim.current.buffer.vars.get('joplin_note_id', b'')# .decode()
+        note_id = vim.current.buffer.vars.get('joplin_note_id', b'')
         if note_id != '':
             self._save_pos(note_id)
 
@@ -178,7 +178,7 @@ class Win(object):
             vim.command('echo "Joplin: note should copy to a notebook"')
             return
 
-        new_title = vim.call('expand', '%:p:t').decode()
+        new_title = vim.call('expand', '%:p:t')
         note = NoteNode()
         body = '\n'.join(vim.current.buffer[:])
         note.parent_id = parent.node.id
@@ -324,7 +324,7 @@ class Win(object):
         filename = note.title + '.md'
         filename = filename.replace('/', '-')
         filename = os.path.join(dirname, filename)
-        filename = vim.call('fnameescape', filename)# .decode()
+        filename = vim.call('fnameescape', filename)
         try:
             os.mkdir(dirname)
         except FileExistsError:
@@ -398,7 +398,7 @@ class Win(object):
 
     # ============================== complete
     def complete_note_tag(self):
-        note_id = vim.current.buffer.vars.get('joplin_note_id', b'').decode()
+        note_id = vim.current.buffer.vars.get('joplin_note_id', b'')
         if note_id == '':
             return ''
         tags = list([tag.title for tag in self._joplin.get_note_tags(note_id)])
@@ -695,7 +695,7 @@ class Win(object):
         if treenode is None:
             return
         prompt = 'Rename %s to: ' % treenode.node.title
-        new_name = vim.call('input', prompt, treenode.node.title).decode()
+        new_name = vim.call('input', prompt, treenode.node.title)
         if new_name == treenode.node.title or new_name == '':
             return
         node = self._joplin.get(FolderNode, treenode.node.id) \
@@ -972,7 +972,7 @@ class Win(object):
 
     def edit_cur_search(self, last_query):
         line = vim.call('line', '.')
-        content = vim.call('getline', line).decode()
+        content = vim.call('getline', line)
         items = content.split('|')
         if len(items) < 2:
             return
@@ -994,7 +994,7 @@ class Win(object):
 
     # ============================== note cmds
     def cmd_note_info(self):
-        note_id = vim.current.buffer.vars.get('joplin_note_id', b'').decode()
+        note_id = vim.current.buffer.vars.get('joplin_note_id', b'')
         if note_id == '':
             return
 
@@ -1044,7 +1044,7 @@ class Win(object):
         if title == '':
             return
 
-        note_id = vim.current.buffer.vars.get('joplin_note_id', b'').decode()
+        note_id = vim.current.buffer.vars.get('joplin_note_id', b'')
         if note_id == '':
             return
         # the note has the tag
@@ -1065,7 +1065,7 @@ class Win(object):
     def cmd_tag_del(self, title):
         if title == '':
             return
-        note_id = vim.current.buffer.vars.get('joplin_note_id', b'').decode()
+        note_id = vim.current.buffer.vars.get('joplin_note_id', b'')
         if note_id == '':
             return
         tags = list(
@@ -1075,7 +1075,7 @@ class Win(object):
             self._joplin.delete_tag_note(tags[0].id, note_id)
 
     def cmd_note_type_switch(self):
-        note_id = vim.current.buffer.vars.get('joplin_note_id', b'').decode()
+        note_id = vim.current.buffer.vars.get('joplin_note_id', b'')
         if note_id == '':
             return
 
@@ -1085,7 +1085,7 @@ class Win(object):
             self._refresh_treenode_line(line)
 
     def cmd_todo_completed_switch(self):
-        note_id = vim.current.buffer.vars.get('joplin_note_id', b'').decode()
+        note_id = vim.current.buffer.vars.get('joplin_note_id', b'')
         if note_id == '':
             return
 
@@ -1252,7 +1252,7 @@ def tree_line(node, indent):
 def note_map_command(lhs, command):
     if lhs == '':
         return
-    origin = vim.call('maparg', lhs, 'n').decode()
+    origin = vim.call('maparg', lhs, 'n')
     if origin != '':
         return
     vim.command('nnoremap <buffer>%s <esc>:<c-u>%s' % (lhs, command))
@@ -1360,7 +1360,7 @@ def input_path(prompt, default_path):
     vim.command('redraw!')
     vim.command('echo " "')
     path = vim.call('input', prompt, default_path,
-                                 'custom,joplin#complete#folder').decode()
+                                 'custom,joplin#complete#folder')
     path = path.strip()
     vim.command('redraw!')
     vim.options['cmdheight'] = cmdheight_saved
